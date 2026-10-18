@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizEarn BD</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f7ff;
+      text-align: center;
+      padding: 25px 15px;
+      color: #17324d;
+    }
+    .card {
+      max-width: 420px;
+      margin: 35px auto;
+      padding: 25px;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 4px 18px #0001;
+    }
+    button {
+      background: #087fdb;
+      color: white;
+      border: 0;
+      padding: 13px 20px;
+      margin: 8px;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    #result { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎯 QuizEarn BD</h1>
+    <p>প্রতিদিন নতুন কিছু শেখো!</p>
+    <hr>
+    <h3 id="question">বাংলাদেশের রাজধানী কোনটি?</h3>
+    <button onclick="answer('ঢাকা')">ঢাকা</button>
+    <button onclick="answer('চট্টগ্রাম')">চট্টগ্রাম</button>
+    <button onclick="answer('খুলনা')">খুলনা</button>
+    <p id="result"></p>
+    <button onclick="nextQuestion()">পরের প্রশ্ন</button>
+    <p>স্কোর: <span id="score">0</span></p>
+  </div>
+  <script>
+    const questions = [
+      {q:"বাংলাদেশের রাজধানী কোনটি?", a:["ঢাকা","চট্টগ্রাম","খুলনা"], correct:"ঢাকা"},
+      {q:"বাংলাদেশের জাতীয় ফুল কোনটি?", a:["গোলাপ","শাপলা","জবা"], correct:"শাপলা"},
+      {q:"১ সপ্তাহে কত দিন?", a:["৫","৭","১০"], correct:"৭"},
+      {q:"ইংরেজিতে 'বই' কী?", a:["Pen","Book","Table"], correct:"Book"}
+    ];
+    let index = 0, score = 0, answered = false;
+    function showQuestion() {
+      document.getElementById("question").textContent = questions[index].q;
+      document.getElementById("result").textContent = "";
+      document.querySelectorAll(".card button").forEach((b, i) => {
+        if (i < 3) {
+          b.textContent = questions[index].a[i];
+          b.disabled = false;
+        }
+      });
+      answered = false;
+    }
+    function answer(choice) {
+      if (answered) return;
+      answered = true;
+      if (choice === questions[index].correct) {
+        score++;
+        document.getElementById("result").textContent = "সঠিক উত্তর! 🎉";
+      } else {
+        document.getElementById("result").textContent =
+          "ভুল হয়েছে! সঠিক উত্তর: " + questions[index].correct;
+      }
+      document.getElementById("score").textContent = score;
+      document.querySelectorAll(".card button").forEach((b, i) => {
+        if (i < 3) b.disabled = true;
+      });
+    }
+    function nextQuestion() {
+      index = (index + 1) % questions.length;
+      showQuestion();
+    }
+  </script>
+</body>
+</html>
