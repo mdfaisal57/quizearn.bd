@@ -3,86 +3,266 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuizEarn BD</title>
+  <title>BazarGhor — অনলাইন বাজার</title>
   <style>
+    * { box-sizing: border-box; }
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f0f7ff;
-      text-align: center;
-      padding: 25px 15px;
-      color: #17324d;
+      background: #f5f5f5;
+      color: #222;
     }
-    .card {
-      max-width: 420px;
-      margin: 35px auto;
-      padding: 25px;
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 4px 18px #0001;
+    header {
+      background: #f85606;
+      color: white;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .top {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .logo { font-size: 24px; font-weight: bold; }
+    .search {
+      flex: 1;
+      min-width: 160px;
+      display: flex;
+    }
+    .search input {
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 7px 0 0 7px;
+      font-size: 15px;
     }
     button {
-      background: #087fdb;
-      color: white;
+      cursor: pointer;
       border: 0;
-      padding: 13px 20px;
-      margin: 8px;
-      border-radius: 10px;
-      font-size: 16px;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 15px;
     }
-    #result { font-weight: bold; }
+    .search button { border-radius: 0 7px 7px 0; }
+    .cart-button { background: white; color: #e64b00; }
+    .hero {
+      margin: 18px auto;
+      max-width: 1100px;
+      padding: 30px 20px;
+      border-radius: 14px;
+      background: linear-gradient(120deg, #ff7a24, #ffb347);
+      color: white;
+    }
+    .hero h1 { margin-top: 0; font-size: 30px; }
+    main { max-width: 1100px; margin: auto; padding: 0 14px 30px; }
+    .categories, .products {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .category, .product {
+      background: white;
+      padding: 14px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .category { cursor: pointer; font-weight: bold; }
+    .category:hover, .product:hover {
+      box-shadow: 0 3px 12px #0001;
+    }
+    .emoji { font-size: 35px; }
+    .product { text-align: left; }
+    .product .emoji { text-align: center; padding: 15px 0; }
+    .product h3 { font-size: 16px; min-height: 38px; }
+    .price { color: #f85606; font-weight: bold; font-size: 18px; }
+    .add {
+      background: #f85606;
+      color: white;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .muted { color: #777; font-size: 13px; }
+    .section-title { margin: 25px 0 14px; }
+    .notice {
+      background: #fff2e9;
+      color: #9a3900;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+    #empty { text-align: center; padding: 25px; }
+    footer {
+      background: #222;
+      color: white;
+      padding: 25px;
+      text-align: center;
+    }
+    @media (max-width: 650px) {
+      .categories { grid-template-columns: repeat(2, 1fr); }
+      .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero h1 { font-size: 24px; }
+      .logo { width: 100%; }
+    }
+    @media (min-width: 651px) and (max-width: 900px) {
+      .products { grid-template-columns: repeat(3, 1fr); }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>🎯 QuizEarn BD</h1>
-    <p>প্রতিদিন নতুন কিছু শেখো!</p>
-    <hr>
-    <h3 id="question">বাংলাদেশের রাজধানী কোনটি?</h3>
-    <button onclick="answer('ঢাকা')">ঢাকা</button>
-    <button onclick="answer('চট্টগ্রাম')">চট্টগ্রাম</button>
-    <button onclick="answer('খুলনা')">খুলনা</button>
-    <p id="result"></p>
-    <button onclick="nextQuestion()">পরের প্রশ্ন</button>
-    <p>স্কোর: <span id="score">0</span></p>
-  </div>
+  <header>
+    <div class="top">
+      <div class="logo">🛍️ BazarGhor</div>
+      <form class="search" id="searchForm">
+        <input id="searchInput" placeholder="আপনি কী খুঁজছেন?" aria-label="পণ্য খুঁজুন">
+        <button type="submit">🔍</button>
+      </form>
+      <button class="cart-button" onclick="showCart()">
+        🛒 কার্ট (<span id="cartCount">0</span>)
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>আপনার পছন্দের বাজার, এখন এক জায়গায়!</h1>
+      <p>সহজে পণ্য খুঁজুন এবং আপনার পছন্দের জিনিস বেছে নিন।</p>
+      <button onclick="document.getElementById('productsTitle').scrollIntoView()">
+        কেনাকাটা শুরু করুন
+      </button>
+    </section>
+
+    <div class="notice">
+      ℹ️ এটি একটি প্রাথমিক ডেমো। এখনো বাস্তব অর্ডার, পেমেন্ট বা Firebase যুক্ত করা হয়নি।
+    </div>
+
+    <h2 class="section-title">📂 পণ্যের বিভাগ</h2>
+    <section class="categories">
+      <div class="category" onclick="filterCategory('সব')">
+        <div class="emoji">🛍️</div>সব পণ্য
+      </div>
+      <div class="category" onclick="filterCategory('ইলেকট্রনিক্স')">
+        <div class="emoji">📱</div>ইলেকট্রনিক্স
+      </div>
+      <div class="category" onclick="filterCategory('ফ্যাশন')">
+        <div class="emoji">👕</div>ফ্যাশন
+      </div>
+      <div class="category" onclick="filterCategory('ঘর ও রান্নাঘর')">
+        <div class="emoji">🏠</div>ঘর ও রান্নাঘর
+      </div>
+    </section>
+
+    <h2 class="section-title" id="productsTitle">🔥 জনপ্রিয় পণ্য</h2>
+    <section class="products" id="products"></section>
+    <div id="empty" hidden>কোনো পণ্য পাওয়া যায়নি। অন্য নামে খুঁজুন।</div>
+
+    <section id="cartSection" hidden>
+      <h2 class="section-title">🛒 আপনার কার্ট</h2>
+      <div id="cartItems"></div>
+      <h3 id="cartTotal"></h3>
+      <p class="muted">ডেমো কার্ট—এখনো অর্ডার বা পেমেন্ট করা যাবে না।</p>
+    </section>
+  </main>
+
+  <footer>
+    <h3>🛍️ BazarGhor</h3>
+    <p>বাংলাদেশের অনলাইন কেনাকাটার ডেমো</p>
+    <small>© 2026 BazarGhor — ডেমো সংস্করণ</small>
+  </footer>
+
   <script>
-    const questions = [
-      {q:"বাংলাদেশের রাজধানী কোনটি?", a:["ঢাকা","চট্টগ্রাম","খুলনা"], correct:"ঢাকা"},
-      {q:"বাংলাদেশের জাতীয় ফুল কোনটি?", a:["গোলাপ","শাপলা","জবা"], correct:"শাপলা"},
-      {q:"১ সপ্তাহে কত দিন?", a:["৫","৭","১০"], correct:"৭"},
-      {q:"ইংরেজিতে 'বই' কী?", a:["Pen","Book","Table"], correct:"Book"}
+    const products = [
+      {id:1, name:"স্মার্টফোন", category:"ইলেকট্রনিক্স", price:12990, emoji:"📱"},
+      {id:2, name:"ওয়্যারলেস হেডফোন", category:"ইলেকট্রনিক্স", price:850, emoji:"🎧"},
+      {id:3, name:"পুরুষদের টি-শার্ট", category:"ফ্যাশন", price:450, emoji:"👕"},
+      {id:4, name:"নারীদের ব্যাগ", category:"ফ্যাশন", price:790, emoji:"👜"},
+      {id:5, name:"রাইস কুকার", category:"ঘর ও রান্নাঘর", price:1850, emoji:"🍚"},
+      {id:6, name:"টেবিল ল্যাম্প", category:"ঘর ও রান্নাঘর", price:620, emoji:"💡"},
+      {id:7, name:"স্মার্ট ঘড়ি", category:"ইলেকট্রনিক্স", price:1450, emoji:"⌚"},
+      {id:8, name:"ব্যাকপ্যাক", category:"ফ্যাশন", price:990, emoji:"🎒"}
     ];
-    let index = 0, score = 0, answered = false;
-    function showQuestion() {
-      document.getElementById("question").textContent = questions[index].q;
-      document.getElementById("result").textContent = "";
-      document.querySelectorAll(".card button").forEach((b, i) => {
-        if (i < 3) {
-          b.textContent = questions[index].a[i];
-          b.disabled = false;
-        }
-      });
-      answered = false;
+
+    let cart = [];
+    let activeCategory = "সব";
+    let searchTerm = "";
+
+    const money = n => "৳" + n.toLocaleString("en-BD");
+
+    function renderProducts() {
+      const list = products.filter(p =>
+        (activeCategory === "সব" || p.category === activeCategory) &&
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      document.getElementById("products").innerHTML = list.map(p => `
+        <article class="product">
+          <div class="emoji">${p.emoji}</div>
+          <h3>${p.name}</h3>
+          <div class="muted">${p.category}</div>
+          <p class="price">${money(p.price)}</p>
+          <button class="add" onclick="addToCart(${p.id})">
+            কার্টে যোগ করুন
+          </button>
+        </article>
+      `).join("");
+
+      document.getElementById("empty").hidden = list.length !== 0;
     }
-    function answer(choice) {
-      if (answered) return;
-      answered = true;
-      if (choice === questions[index].correct) {
-        score++;
-        document.getElementById("result").textContent = "সঠিক উত্তর! 🎉";
-      } else {
-        document.getElementById("result").textContent =
-          "ভুল হয়েছে! সঠিক উত্তর: " + questions[index].correct;
-      }
-      document.getElementById("score").textContent = score;
-      document.querySelectorAll(".card button").forEach((b, i) => {
-        if (i < 3) b.disabled = true;
-      });
+
+    function filterCategory(category) {
+      activeCategory = category;
+      renderProducts();
+      document.getElementById("productsTitle").scrollIntoView({behavior:"smooth"});
     }
-    function nextQuestion() {
-      index = (index + 1) % questions.length;
-      showQuestion();
+
+    document.getElementById("searchForm").addEventListener("submit", e => {
+      e.preventDefault();
+      searchTerm = document.getElementById("searchInput").value.trim();
+      renderProducts();
+    });
+
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      const item = cart.find(p => p.id === id);
+      if (item) item.quantity++;
+      else cart.push({...product, quantity:1});
+      updateCart();
     }
+
+    function updateCart() {
+      document.getElementById("cartCount").textContent =
+        cart.reduce((sum, p) => sum + p.quantity, 0);
+
+      document.getElementById("cartItems").innerHTML = cart.length
+        ? cart.map(p => `
+          <p>${p.emoji} ${p.name} × ${p.quantity}
+          — ${money(p.price * p.quantity)}
+          <button onclick="removeFromCart(${p.id})">বাদ দিন</button></p>
+        `).join("")
+        : "<p>আপনার কার্ট এখন খালি।</p>";
+
+      document.getElementById("cartTotal").textContent =
+        "মোট: " + money(cart.reduce((sum, p) => sum + p.price * p.quantity, 0));
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(p => p.id !== id);
+      updateCart();
+    }
+
+    function showCart() {
+      const section = document.getElementById("cartSection");
+      section.hidden = false;
+      updateCart();
+      section.scrollIntoView({behavior:"smooth"});
+    }
+
+    renderProducts();
+    updateCart();
   </script>
 </body>
 </html>
